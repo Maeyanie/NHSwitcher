@@ -1,0 +1,38 @@
+<?php
+
+$miner = "./cpuminer.exe";
+
+$algos = array(
+	0 => "$miner -a scrypt",
+	1 => "$miner -a sha256d",
+	2 => false, // ScryptNf
+	3 => "$miner -a x11",
+	4 => "$miner -a x13",
+	5 => "$miner -a keccak",
+	6 => "$miner -a x15",
+	7 => "$miner -a nist5",
+	8 => "$miner -a neoscrypt",
+	9 => "$miner -a lyra2re",
+	10 => false, // WhirlpoolX
+	11 => "$miner -a qubit",
+	12 => "$miner -a quark",
+	13 => "./cpuminer_x64_AVX2.exe -a axiom",
+	14 => "$miner -a lyra2rev2",
+	15 => "$miner -a scrypt-jane:16",
+	16 => false, // blake256r8
+	17 => false, // blake256r14
+	18 => false, // blake256r4vnl
+	19 => "./hodlminer_core_avx2.exe -a hodl",
+	20 => false, //"./ethminer.exe -SP 2 -U",
+	21 => false, // decred
+	22 => "./cpuminer_x64_AVX2.exe -a cryptonight",
+	23 => false, // lbry
+	24 => "../../nheqminer_v0.3a/nheqminer.exe",
+	999 => false
+);
+
+$region = "usa"; // usa, eu, hk, jp
+$btcaddr = ""; // Your BTC address
+$name = ""; // Worker name for this miner (doesn't seem to actually show up anywhere?)
+$args = ""; // Extra arguments to pass to miners
+?>
