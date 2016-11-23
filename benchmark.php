@@ -3,15 +3,19 @@
 require "config.php";
 $bench = array();
 
-foreach ($algos as $id=>$algo) {
-	if ($algo === false) continue;
+function benchmark($id, $algo) {
+	global $args;
 	
 	echo "Benchmarking $algo...\n";
 	$count = 0;
 	$total = 0;
 	$first = true;
 
-	$cmd = "$algo --benchmark $args";
+	if ($id == 24) { // EquiHash
+		$cmd = "$algo -b $args";
+	} else {
+		$cmd = "$algo --benchmark $args";
+	}
 	$ds = array(0 => array("pipe", "r"), 1 => array("pipe", "w"), 2 => array("pipe", "w"));
 	$pd = proc_open($cmd, $ds, $pipes);
 	if ($pd === false) {
@@ -65,6 +69,11 @@ foreach ($algos as $id=>$algo) {
 			$total += $matches[1];
 			echo "\t$matches[1] H\n";
 			if ($count++ == 5) break;
+		} else if (preg_match("|Theoretical: ([\d+\.]+) Sols/s|", $line, $matches)) {
+			$total = $matches[1];
+			$count = 1;
+			echo "\t$matches[1] Sols/s\n";
+			break;
 		} else if (strpos($line, "FATAL") !== false || strpos($line, "Err") !== false) {
 			echo "\tError running benchmark.\n";
 			break;
@@ -82,8 +91,24 @@ foreach ($algos as $id=>$algo) {
 	else $avg = $total / $count;
 	
 	echo "\tAverage: $avg H/s\n";
-	$bench[$id] = $avg;
-	sleep(5);
+	return $avg;
 }
 
-file_put_contents("benchmark.json", json_encode($bench));
+if ($argc > 1) {
+	$bench = json_decode(file_get_contents("benchmark.json"), true);
+	array_shift($argv);
+	foreach ($argv as $id) {
+		$algo = $algos[$id];
+		if ($algo === false) continue;
+		$bench[$id] = benchmark($id, $algo);
+		sleep(5);
+	}
+} else {
+	foreach ($algos as $id=>$algo) {
+		if ($algo === false) continue;
+		$bench[$id] = benchmark($id, $algo);
+		sleep(5);
+	}
+}
+
+file_put_contents("benchmark.json", json_encode($bench, JSON_PRETTY_PRINT));
