@@ -36,11 +36,11 @@ while (true) {
 		if (!isset($algos[$a->algo])) { echo "*** New algorithm detected: $a->name ($a->algo) ***\n"; continue; }
 		if ($algos[$a->algo] === false) continue;
 		$id = $a->algo;
-		$name = $a->name;
+		$algname = $a->name;
 		$algo = $algos[$id];
 		//         BTC/GHps/day * KHps = uBTC/day
 		$pay = round($a->paying * ($bench[$id]/1000), 3);
-		if ($pay != 0) $best["$pay"] = array($id, $name, $algo, $pay);
+		if ($pay != 0) $best["$pay"] = array($id, $algname, $algo, $pay);
 	}
 	krsort($best);
 	foreach ($best as $k=>$v) {
